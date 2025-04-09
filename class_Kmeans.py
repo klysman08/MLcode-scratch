@@ -4,39 +4,64 @@ import statistics
 import matplotlib.pyplot as plt
 import numpy as np
 
-def knn(x_train, y_train, x_test, k):
-    distances = [] #lista que armazena as distâncias
-    x1 = x_test # elemento a ser classificado
-    for x2 in x_train: # distancia entre a observacao elementos no conjunto de teste
-        dist = distance.euclidean(x1,x2)
-        distances.append(dist)
-    indices = []
-    cl = []
-    for i in range(0,k):
-        ind = np.argmin(distances) #elemento no conjunto de teste mais proximo
-        #print('distance:', distances[ind],'index:', ind, 'class:', y_train[ind])
-        distances[ind] = np.max(distances) 
-        indices.append(ind)
-        cl.append(y_train[ind]) #guarda a classe
-    print("Classes:",cl)
-    classification = statistics.mode(cl)# encontra a classe
-    return classification
+class KNN:
+    def __init__(self, k=3):
+        self.k = k
+        self.x_train = None
+        self.y_train = None
+    
+    def fit(self, x_train, y_train):
+        self.x_train = x_train
+        self.y_train = y_train
+    
+    def predict(self, x_test):
+        distances = []
+        x1 = x_test
+        for x2 in self.x_train:
+            dist = distance.euclidean(x1, x2)
+            distances.append(dist)
+        
+        indices = []
+        cl = []
+        for i in range(self.k):
+            ind = np.argmin(distances)
+            distances[ind] = np.max(distances)
+            indices.append(ind)
+            cl.append(self.y_train[ind])
+        
+        print("Classes:", cl)
+        classification = statistics.mode(cl)
+        return classification
+    
+    def plot(self, x_test):
+        plt.scatter(self.x_train[:,0], self.x_train[:,1], c=self.y_train, s=150, marker='o', edgecolor='black')
+        plt.plot(x_test[0], x_test[1], marker='s', markersize=15, color="black")
+        plt.xlim(0.2, 1.6)
+        plt.ylim(0, 1.6)
+        plt.savefig('knn.eps')
+        plt.show(True)
 
-k=3 # numero de vizinhos
-x_train = np.array([[1,0.5],[0.8,0.8],[1.2,1.4],[0.6,0.4],[0.4,1.2],[1.5,1]])
-y_train = np.array(['white','gray','white','gray','gray','white'], dtype = 'str')
-x_test = np.array([1,1])
-# realiza a classificacao
-cl = knn(x_train, y_train, x_test, k)
-print("Classification:", cl)
-# mostra os dados
-plt.scatter(x_train[:,0],x_train[:,1],c=y_train, s=150, marker='o', edgecolor='black')
-plt.plot(x_test[0],x_test[1], marker='s', markersize=15, color="black")
-plt.xlim(0.2,1.6)
-plt.ylim(0,1.6)
-plt.savefig('knn.eps')
-
-plt.show(True)
+# Example usage
+if __name__ == "__main__":
+    # Create KNN instance
+    knn = KNN(k=3)
+    
+    # Training data
+    x_train = np.array([[1,0.5], [0.8,0.8], [1.2,1.4], [0.6,0.4], [0.4,1.2], [1.5,1]])
+    y_train = np.array(['white', 'gray', 'white', 'gray', 'gray', 'white'], dtype='str')
+    
+    # Fit the model
+    knn.fit(x_train, y_train)
+    
+    # Test data
+    x_test = np.array([1,1])
+    
+    # Make prediction
+    cl = knn.predict(x_test)
+    print("Classification:", cl)
+    
+    # Plot results
+    knn.plot(x_test)
 
 
 # %%
