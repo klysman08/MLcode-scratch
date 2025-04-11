@@ -113,8 +113,5 @@ Feel free to contribute to this project by:
 - Fixing bugs
 - Adding test cases
 
-## License
 
-This project is open source and available for educational purposes.
-
-
+![Mathematical Definitions for Data Science](25%20Most%20Important%20Mathematical%20Definitions%20in%20DS.png "Math Definitions for DS")
